@@ -1,0 +1,28 @@
+{
+  "name": "expressdemo",
+  "version": "1.0.0",
+  "description": "BackEnd Expres",
+  "keywords": [
+    "BackEnd",
+    "Expres"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "BackEnd Expres.js"
+  },
+  "license": "ISC",
+  "author": "OlmosbekOWA",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "y": "^0.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
