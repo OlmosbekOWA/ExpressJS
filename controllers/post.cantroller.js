@@ -1,8 +1,11 @@
 import postService from "../server/post.service.js";
+import fs from "fs/promises";
+import path from "path";
 class PostCantroller {
   //Get
   async getAll(req, res) {
     try {
+      console.log(req.requestTime);
       const get = await postService.getAll();
       res.status(200).json(get);
     } catch (error) {
@@ -39,12 +42,40 @@ class PostCantroller {
     try {
       const { id } = req.params;
 
+      const post = await postService.getOne(id);
+      if (!post) {
+        return res.status(404).json({ message: "Post topilmadi" });
+      }
+
+      // Rasmni o'chirish
+      if (post.picture) {
+        const imageName = post.picture;
+        const currentDir = import.meta.dirname;
+        const staticDir = path.join(currentDir, "..", "static");
+        const filePath = path.join(staticDir, imageName);
+
+        try {
+          await fs.access(filePath); // fayl borligini tekshirish
+          await fs.unlink(filePath); // o'chirish
+          console.log(`Rasm o'chirildi: ${imageName}`);
+        } catch (fsErr) {
+          if (fsErr.code !== "ENOENT") {
+            // faqat "fayl topilmadi" bo'lmasa log qilamiz
+            console.warn(`Rasm o'chirishda muammo: ${fsErr.message}`);
+          }
+          // ENOENT bo'lsa (fayl yo'q) — jim o'tkazib yuboramiz
+        }
+      }
+
+      // Postni bazadan o'chirish
       const deletedPost = await postService.delete(id);
 
-      res.status(200).json(deletedPost);
+      return res.status(200).json(deletedPost);
     } catch (error) {
       console.error("Delete xatosi:", error);
-      res.status(500).json({ message: "Server xatosi" });
+      return res
+        .status(500)
+        .json({ message: "Server xatosi", detail: error.message });
     }
   }
   async edit(req, res) {
