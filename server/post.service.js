@@ -1,37 +1,47 @@
 import postModel from "../models/post.model.js";
+import fileService from "./file.service.js";
+
 class PostService {
-    async create (post){
-        const newPost = await postModel.create(post);
+  async create(post, picture) {
+    let fileName = null;
 
-        return newPost
-    }
-    async getAll (){
-        const allPosts = await postModel.find();
-        return allPosts
+    if (picture) {
+      fileName = fileService.save(picture);
     }
 
-    async delete (id){
-        const post = await postModel.findByIdAndDelete(id)
-        return post
+    const newPost = await postModel.create({
+      ...post,
+      picture: fileName,
+    });
+
+    return newPost;
+  }
+  async getAll() {
+    const allPosts = await postModel.find();
+    return allPosts;
+  }
+
+  async delete(id) {
+    const post = await postModel.findByIdAndDelete(id);
+    return post;
+  }
+
+  async edit(post, id) {
+    if (!id) {
+      throw new Error("ID not found");
     }
+    const updateData = await postModel.findByIdAndUpdate(id, post, {
+      new: true,
+    });
 
-    async edit(post, id){
-        if(!id){
-            throw new Error("ID not found")
-        }
-        const updateData = await postModel.findByIdAndUpdate(id, post, { new: true })
+    return updateData;
+  }
 
-        return updateData
-    }
+  async getOne(id) {
+    const oneData = await postModel.findById(id);
 
-    async getOne (id){
-        
-        const oneData = await postModel.findById(id)
-        
-        return oneData
-
-    }
+    return oneData;
+  }
 }
 
-
-export default new PostService()
+export default new PostService();

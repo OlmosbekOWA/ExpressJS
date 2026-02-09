@@ -5,7 +5,6 @@ const router = express.Router();
 
 router.get("/get", postCantroller.getAll);          
 
-// POST / → yangi post yaratish
 router.post("/create", postCantroller.posts)
 
 router.delete("/delete/:id", postCantroller.delete);

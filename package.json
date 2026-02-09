@@ -21,8 +21,10 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-fileupload": "^1.5.2",
     "mongodb": "^7.0.0",
     "mongoose": "^9.1.5",
+    "uuid": "^13.0.0",
     "y": "^0.3.2"
   },
   "devDependencies": {
