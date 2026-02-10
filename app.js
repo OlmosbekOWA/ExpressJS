@@ -4,10 +4,11 @@ import express from "express";
 import mongoose from 'mongoose';
 import fileUpload from "express-fileupload";
 import postRoute from "./routers/post.route.js";
+import usersRouter from "./routers/users.route.js";
+// import authRouter from "./routers/auth.route.js"
 import requestTime from './middlewars/request-time.js';
 
 const app = express();
-
 
 const PORT = process.env.PORT || 5000;
 
@@ -18,6 +19,8 @@ app.use(requestTime)
 
 
 app.use("/api/post", postRoute);
+app.use("/api/user", usersRouter);
+// app.use("/api/auth", authRouter)
 
 const bootstrap = async () => {
   try {
