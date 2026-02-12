@@ -1,6 +1,6 @@
 import express from "express";
 
-import usersCantroller from "../controllers/users.cantroller.js";
+import usersCantroller from "../controllers/users.controller.js";
 const router = express.Router();
 
 // Yangi user qo'shish (POST)

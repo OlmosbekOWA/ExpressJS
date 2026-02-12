@@ -1,17 +1,17 @@
-// import { Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
-// const userSchema = new Schema(
-//   {
-//     email: {type:String, required: true, unique: true},
-//     password:{type:String, require: true}, 
-//     isActivated:{type: Boolean, default: false}
-//   },
-//   {
-//     timestamps: true
-//   }
+const userSchema = new Schema(
+  {
+    email: {type:String, required: true, unique: true},
+    password:{type:String, require: true}, 
+    isActivated:{type: Boolean, default: false}
+  },
+  {
+    timestamps: true
+  }
     
-// );
+);
 
-// const userModel = model("User", userSchema);
+const userModel = model("Auth", userSchema);
 
-// export default userModel;
+export default userModel;

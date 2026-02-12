@@ -27,6 +27,15 @@ class UsersService {
     await newUser.save();
     return newUser;
   }
+
+  async getAll(){
+    const allUsers = await usersModel.find().sort({ createdAt: -1 })
+    return allUsers
+  }
+  async getOne(id){
+    const oneData = await usersModel.findById(id)
+    return oneData
+  }
 }
 
 export default new UsersService();

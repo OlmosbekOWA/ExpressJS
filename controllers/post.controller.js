@@ -1,4 +1,4 @@
-import postService from "../server/post.service.js";
+import postService from "../service/post.service.js";
 import fs from "fs/promises";
 import path from "path";
 class PostCantroller {

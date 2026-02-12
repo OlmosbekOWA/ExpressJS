@@ -1,5 +1,5 @@
 import express from "express";
-import postCantroller from "../controllers/post.cantroller.js";
+import postCantroller from "../controllers/post.controller.js";
 import logger from "../middlewars/logger.js";
 
 const router = express.Router();

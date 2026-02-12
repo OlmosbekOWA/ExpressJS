@@ -1,5 +1,5 @@
 import usersModel from "../models/users.model.js";
-import usersService from "../server/users.service.js";
+import usersService from "../service/users.service.js";
 
 
 class UsersCantroller {
