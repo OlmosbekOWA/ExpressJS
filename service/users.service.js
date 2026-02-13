@@ -1,4 +1,5 @@
 import usersModel from "../models/users.model.js";
+import UserDto from "../dtos/user.dto.js";
 
 class UsersService {
   async create(post) {
@@ -9,11 +10,16 @@ class UsersService {
       gmail,
       interests = [],
       school,
-      class: userClass, // class — kalit so'z, shuning uchun o'zgartirdik
+      class: userClass,
       passport,
     } = post;
 
-    const newUser = new usersModel({
+    const existUser = await usersModel.findOne({ gmail });
+    if (existUser) {
+      throw new Error(`User with existing email ${gmail} already exist`);
+    }
+
+    const newUser = await usersModel.create({
       name,
       surname,
       age,
@@ -24,27 +30,31 @@ class UsersService {
       passport,
     });
 
-    const existUser = await usersModel.findOne({ gmail });
-    if (existUser) {
-      throw new Error(`User with existing email ${gmail} already exist`);
+    return new UserDto(newUser);
+  }
+
+  async getAll() {
+    const allUsers = await usersModel.find().sort({ createdAt: -1 });
+
+    return allUsers.map(user => new UserDto(user));
+  }
+
+  async getOne(id) {
+    const oneData = await usersModel.findById(id);
+    if (!oneData) {
+      throw new Error("User not found");
     }
 
-    await newUser.save();
-    return newUser;
+    return new UserDto(oneData);
   }
 
-  async getAll(){
-    const allUsers = await usersModel.find().sort({ createdAt: -1 })
-    return allUsers
-  }
-  async getOne(id){
-    const oneData = await usersModel.findById(id)
-    return oneData
-  }
+  async delete(id) {
+    const deleteUser = await usersModel.findByIdAndDelete(id);
+    if (!deleteUser) {
+      throw new Error("User not found");
+    }
 
-  async delete(id){
-    const deleteUser = await usersModel.findByIdAndDelete(id)
-    return deleteUser
+    return new UserDto(deleteUser);
   }
 }
 

@@ -1,4 +1,4 @@
-import UserDto from "../dtos/user.dto.js";
+import AuthDto from "../dtos/auth.dto.js";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcrypt"
 
@@ -15,8 +15,8 @@ class AuthService {
     const hashPassword = await bcrypt.hash(password, saltRounds);
     const user = await userModel.create({ gmail, hashPassword });
 
-    const UserDtos = new UserDto(user);
-    return { UserDtos };
+    const AuthDtos = new AuthDto(user);
+    return { AuthDtos };
   }
   async activate(userId) {
     console.log(userId);

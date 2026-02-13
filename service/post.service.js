@@ -1,3 +1,4 @@
+import postDto from "../dtos/post.dto.js";
 import postModel from "../models/post.model.js";
 import fileService from "./file.service.js";
 
@@ -13,8 +14,9 @@ class PostService {
       ...post,
       picture: fileName,
     });
+    const postDtos  = new postDto(newPost)
+    return postDtos;
 
-    return newPost;
   }
   async getAll() {
     const allPosts = await postModel.find();
