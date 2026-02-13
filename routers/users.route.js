@@ -12,4 +12,7 @@ router.get("/users", usersCantroller.getAll);
 // Bitta userni ID bo'yicha olish (ixtiyoriy)
 router.get("/users/:id", usersCantroller.getOne);
 
+// User malumotlarini o'chirish
+router.delete("/delete/:id", usersCantroller.deleteUser)
+
 export default router;

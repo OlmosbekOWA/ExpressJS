@@ -4,16 +4,16 @@ import bcrypt from "bcrypt"
 
 
 class AuthService {
-  async register(email, password){
-    const existUser = await userModel.findOne({ email });
+  async register(gmail, password){
+    const existUser = await userModel.findOne({ gmail });
 
     if (existUser) {
-      throw new Error(`User with existing email ${email} already registered`);
+      throw new Error(`User with existing email ${gmail} already registered`);
     }
     const saltRounds = 10;
 
     const hashPassword = await bcrypt.hash(password, saltRounds);
-    const user = await userModel.create({ email, hashPassword });
+    const user = await userModel.create({ gmail, hashPassword });
 
     const UserDtos = new UserDto(user);
     return { UserDtos };

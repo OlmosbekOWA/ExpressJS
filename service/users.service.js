@@ -24,6 +24,11 @@ class UsersService {
       passport,
     });
 
+    const existUser = await usersModel.findOne({ gmail });
+    if (existUser) {
+      throw new Error(`User with existing email ${gmail} already exist`);
+    }
+
     await newUser.save();
     return newUser;
   }
@@ -35,6 +40,11 @@ class UsersService {
   async getOne(id){
     const oneData = await usersModel.findById(id)
     return oneData
+  }
+
+  async delete(id){
+    const deleteUser = await usersModel.findByIdAndDelete(id)
+    return deleteUser
   }
 }
 

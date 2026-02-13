@@ -22,8 +22,7 @@ const usersSchema = new Schema(
     },
     gmail: {
       type: String,
-      required: [true, "Gmail majburiy maydon"],
-      unique: true,
+      required: [true, "Email majburiy maydon"],
       lowercase: true,
       trim: true,
       match: [

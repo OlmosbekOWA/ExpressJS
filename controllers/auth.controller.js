@@ -2,9 +2,9 @@ import authService from "../service/auth.service.js";
 class AuthCantroller {
   async register(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { gmail, password } = req.body;
 
-      const data = await authService.register(email, password);
+      const data = await authService.register(gmail, password);
       return res.json(data);
     } catch (error) {
       console.log(error);
