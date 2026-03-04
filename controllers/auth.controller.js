@@ -5,6 +5,9 @@ class AuthCantroller {
       const { gmail, password } = req.body;
 
       const data = await authService.register(gmail, password);
+
+      res.cookie("refreshToken", data.refreshToken,  {httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000})
+
       return res.json(data);
     } catch (error) {
       console.log(error);

@@ -1,6 +1,7 @@
 import AuthDto from "../dtos/auth.dto.js";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcrypt"
+import tokenService from "./token.service.js";
 
 
 class AuthService {
@@ -15,8 +16,12 @@ class AuthService {
     const hashPassword = await bcrypt.hash(password, saltRounds);
     const user = await userModel.create({ gmail, hashPassword });
 
-    const AuthDtos = new AuthDto(user);
-    return { AuthDtos };
+    const authDtos = new AuthDto(user);
+
+    const tokens = tokenService.generateToken({...authDtos})
+
+    await tokenService.saveToken(authDtos.id, tokens.refreshToken)
+    return { user:authDtos, ...tokens};
   }
   async activate(userId) {
     console.log(userId);
