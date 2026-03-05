@@ -20,7 +20,7 @@ const usersSchema = new Schema(
       min: [10, "Yosh minimal 10 bo'lishi kerak"],
       max: [120, "Yosh maksimal 120 bo'lishi mumkin"],
     },
-    gmail: {
+    email: {
       type: String,
       required: [true, "Email majburiy maydon"],
       lowercase: true,

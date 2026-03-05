@@ -2,21 +2,26 @@ import AuthDto from "../dtos/auth.dto.js";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcrypt"
 import tokenService from "./token.service.js";
+import mailService from "./mail.service.js";
+
 
 
 class AuthService {
-  async register(gmail, password){
-    const existUser = await userModel.findOne({ gmail });
+  async register(email, password){
+    const existUser = await userModel.findOne({ email });
 
     if (existUser) {
-      throw new Error(`User with existing email ${gmail} already registered`);
+      throw new Error(`User with existing email ${email} already registered`);
     }
+
     const saltRounds = 10;
 
     const hashPassword = await bcrypt.hash(password, saltRounds);
-    const user = await userModel.create({ gmail, hashPassword });
-
+    const user = await userModel.create({ email, hashPassword });
     const authDtos = new AuthDto(user);
+
+    await mailService.sendMail(email, `${process.env.API_URL}/api/auth/activation/${authDtos.id}`)
+
 
     const tokens = tokenService.generateToken({...authDtos})
 
@@ -26,7 +31,7 @@ class AuthService {
   async activate(userId) {
     console.log(userId);
     
-    const userData = await userModel.findById(userId);
+    const userData = await userModel.findById(userId); 
     console.log(userData);
     
     if (!userData) {

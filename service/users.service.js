@@ -7,23 +7,23 @@ class UsersService {
       name,
       surname,
       age,
-      gmail,
+      email,
       interests = [],
       school,
       class: userClass,
       passport,
     } = post;
 
-    const existUser = await usersModel.findOne({ gmail });
+    const existUser = await usersModel.findOne({ email });
     if (existUser) {
-      throw new Error(`User with existing email ${gmail} already exist`);
+      throw new Error(`User with existing email ${email} already exist`);
     }
 
     const newUser = await usersModel.create({
       name,
       surname,
       age,
-      gmail,
+      email,
       interests,
       school,
       class: userClass,

@@ -1,11 +1,10 @@
 export default class AuthDto{
-    gmail
-
+    email
     id
     isActivated
 
     constructor(model){
-        this.gmail = model.gmail
+        this.email = model.email
         this.id = model._id
         this.isActivated = model.isActivated
     }

@@ -3,7 +3,7 @@ export default class UserDto{
     name
     surname
     age
-    gmail
+    email
     interests
     school
     class
@@ -14,7 +14,7 @@ export default class UserDto{
     this.name = model.name;
     this.surname = model.surname;
     this.age = model.age;
-    this.gmail = model.gmail;
+    this.email = model.email;
     this.interests = model.interests;
     this.school = model.school;
     this.class = model.class;
