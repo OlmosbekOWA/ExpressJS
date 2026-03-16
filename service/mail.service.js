@@ -20,7 +20,7 @@ class MailService{
             subject:  `Activation account link ${activationLink}`,
             html:`
                 <div>
-                    <a href = "https://sammi.ac">Click to activate account</a>
+                    <a href = "${activationLink}">Click to activate account</a>
                 </div>
             `
         })
