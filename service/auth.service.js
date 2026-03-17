@@ -3,13 +3,18 @@ import userModel from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import tokenService from "./token.service.js";
 import mailService from "./mail.service.js";
+import BaseError from "../errors/base.error.js";
+import error from "mongoose/lib/error/index.js";
 
 class AuthService {
   async register(email, password) {
     const existUser = await userModel.findOne({ email });
+    
 
     if (existUser) {
-      throw new Error(`User with existing email ${email} already registered`);
+      console.log(error);
+      
+      throw BaseError.BadRequest(`User with existing email ${email} already registered`);
     }
 
     const saltRounds = 10;
@@ -35,7 +40,7 @@ class AuthService {
     console.log(userData);
 
     if (!userData) {
-      throw new Error("User is not defined");
+      throw BaseError.BadRequest("User is not defined");
     }
 
     userData.isActivated = true;
@@ -46,11 +51,11 @@ class AuthService {
     const user = await userModel.findOne({ email })
 
     if (!user) {
-      throw new Error("User with this email not found");
+      throw BaseError.BadRequest("User with this email not found");
     }
 
     if (!user.password) {
-      throw new Error(
+      throw BaseError.BadRequest(
         "Foydalanuvchi paroli bazada saqlanmagan (registratsiya xatosi)",
       );
     }
@@ -58,7 +63,7 @@ class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      throw new Error("Invalid password");
+      throw BaseError.UnauthorizedError("Invalid password");
     }
 
     const authDtos = new AuthDto(user);
@@ -76,15 +81,13 @@ class AuthService {
   }
   async refresh(refreshToken) {
     if (!refreshToken) {
-      throw new Error("Unauthorized");
+      throw BaseError.UnauthorizedError("Unauthorized");
     }
     const userPayload = tokenService.validateRefreshToken(refreshToken);
     const tokenFromDb = await tokenService.findToken(refreshToken);
 
-    console.log("Debug Refresh:", { hasPayload: !!userPayload, hasTokenInDb: !!tokenFromDb });
-
     if (!tokenFromDb || !userPayload) {
-      throw new Error("Unauthorized");
+      throw BaseError.UnauthorizedError("Unauthorized");
     }
 
     const user = await userModel.findById(userPayload.id);

@@ -68,6 +68,6 @@ const usersSchema = new Schema(
   }
 );
 
-const usersModel = model("User", usersSchema);
+const usersModel = model("Users", usersSchema);
 
 export default usersModel;

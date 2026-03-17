@@ -1,13 +1,14 @@
 import postDto from "../dtos/post.dto.js";
 import postModel from "../models/post.model.js";
 import fileService from "./file.service.js";
+import BaseError from "../errors/base.error.js";
 
 class PostService {
   async create(post, picture) {
     let fileName = null;
 
     if (picture) {
-      fileName = fileService.save(picture);
+      fileName = await fileService.save(picture);
     }
 
     const newPost = await postModel.create({
@@ -30,7 +31,7 @@ class PostService {
 
   async edit(post, id) {
     if (!id) {
-      throw new Error("ID not found");
+      throw BaseError.BadRequest("ID not found");
     }
     const updateData = await postModel.findByIdAndUpdate(id, post, {
       new: true,

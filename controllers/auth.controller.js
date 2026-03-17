@@ -1,7 +1,14 @@
 import authService from "../service/auth.service.js";
-class AuthCantroller {
+import BaseError from "../errors/base.error.js";
+import { validationResult } from "express-validator";
+class AuthController {
   async register(req, res, next) {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ message: "Validation failed", errors: errors.array() });
+      }
+
       const { email, password } = req.body;
 
       const data = await authService.register(email, password);
@@ -13,8 +20,7 @@ class AuthCantroller {
 
       return res.json(data);
     } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: error.message });
+      next(error)
     }
   }
 
@@ -24,12 +30,16 @@ class AuthCantroller {
       await authService.activate(userId);
       return res.redirect("https://sammi.ac");
     } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: error.message });
+      next(error)
     }
   }
   async login(req, res, next) {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ message: "Validation failed", errors: errors.array() });
+      }
+
       const { email, password } = req.body;
 
       const data = await authService.login(email, password);
@@ -41,12 +51,7 @@ class AuthCantroller {
 
       return res.json(data);
     } catch (error) {
-      console.error("Login xatosi:", error.message, error.stack);
-      const status =
-        error.message.includes("not found") || error.message.includes("Invalid")
-          ? 401
-          : 500;
-      return res.status(status).json({ message: error.message });
+      next(error)
     }
   }
 
@@ -63,8 +68,7 @@ class AuthCantroller {
       return res.json(removedToken);
       
     } catch (error) {
-      console.error("Logout xatosi:", error.message, error.stack);
-      return res.status(500).json({ message: error.message });
+      next(error)
     }
   }
   async refresh(req, res, next) {
@@ -78,11 +82,10 @@ class AuthCantroller {
 
       return res.json(data);
     } catch (error) {
-      console.error("Token yangilash xatosi:", error.message, error.stack);
-      return res.status(500).json({ message: error.message });
+      next(error)
     }
   }
 
 }
 
-export default new AuthCantroller();
+export default new AuthController();

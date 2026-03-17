@@ -1,5 +1,6 @@
 import usersModel from "../models/users.model.js";
 import UserDto from "../dtos/user.dto.js";
+import BaseError from "../errors/base.error.js";
 
 class UsersService {
   async create(post) {
@@ -16,7 +17,7 @@ class UsersService {
 
     const existUser = await usersModel.findOne({ email });
     if (existUser) {
-      throw new Error(`User with existing email ${email} already exist`);
+      throw BaseError.BadRequest(`User with existing email ${email} already exist`);
     }
 
     const newUser = await usersModel.create({
@@ -42,7 +43,7 @@ class UsersService {
   async getOne(id) {
     const oneData = await usersModel.findById(id);
     if (!oneData) {
-      throw new Error("User not found");
+      throw BaseError.BadRequest("User not found");
     }
 
     return new UserDto(oneData);
@@ -51,7 +52,7 @@ class UsersService {
   async delete(id) {
     const deleteUser = await usersModel.findByIdAndDelete(id);
     if (!deleteUser) {
-      throw new Error("User not found");
+      throw BaseError.BadRequest("User not found");
     }
 
     return new UserDto(deleteUser);

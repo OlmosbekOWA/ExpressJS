@@ -1,20 +1,19 @@
 import postService from "../service/post.service.js";
 import fs from "fs/promises";
 import path from "path";
-class PostCantroller {
+class PostController {
   //Get
-  async getAll(req, res) {
+  async getAll(req, res, next) {
     try {
       console.log(req.requestTime);
       const get = await postService.getAll();
       res.status(200).json(get);
     } catch (error) {
-      console.error("GET xatosi:", error);
-      res.status(500).json({ message: "Server xatosi" });
+      next(error)
     }
   }
   //Post
-  async posts(req, res) {
+  async posts(req, res, next) {
     try {
       const { title, body } = req.body;
 
@@ -30,15 +29,10 @@ class PostCantroller {
 
       return res.status(201).json(createdPost);
     } catch (error) {
-      console.error("Post yaratishda xato:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Server xatosi",
-        detail: error.message || "Noma'lum xato",
-      });
+      next(error)
     }
   }
-  async delete(req, res) {
+  async delete(req, res, next) {
     try {
       const { id } = req.params;
 
@@ -72,13 +66,10 @@ class PostCantroller {
 
       return res.status(200).json(deletedPost);
     } catch (error) {
-      console.error("Delete xatosi:", error);
-      return res
-        .status(500)
-        .json({ message: "Server xatosi", detail: error.message });
+      next(error)
     }
   }
-  async edit(req, res) {
+  async edit(req, res, next) {
     try {
       const { id } = req.params;
       const updateData = req.body;
@@ -87,12 +78,11 @@ class PostCantroller {
 
       res.status(200).json(editPost);
     } catch (error) {
-      console.error("Delete xatosi:", error);
-      res.status(500).json({ message: "Server xatosi" });
+      next(error)
     }
   }
 
-  async getOne(req, res) {
+  async getOne(req, res, next) {
     try {
       const { id } = req.params;
 
@@ -100,10 +90,9 @@ class PostCantroller {
 
       res.status(200).json(oneUser);
     } catch (error) {
-      console.error("Delete xatosi:", error);
-      res.status(500).json({ message: "Server xatosi" });
+      next(error)
     }
   }
 }
 
-export default new PostCantroller();
+export default new PostController();

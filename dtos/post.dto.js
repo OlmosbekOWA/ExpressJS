@@ -1,6 +1,6 @@
 export default class postDto{
     title
-    _id
+    id
     body
     picture
 

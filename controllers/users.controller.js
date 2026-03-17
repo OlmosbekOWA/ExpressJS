@@ -2,7 +2,7 @@
 import usersService from "../service/users.service.js";
 
 class UsersController {
-  async posts(req, res) {
+  async posts(req, res, next) {
     try {
       const createdUser = await usersService.create(req.body);
       return res.status(201).json({
@@ -11,8 +11,6 @@ class UsersController {
         data: createdUser,
       });
     } catch (error) {
-      console.error("Create user error:", error);
-
       if (error.code === 11000) {
         const duplicatedField =
           Object.keys(error.keyValue || {})[0] || "noma'lum";
@@ -39,15 +37,11 @@ class UsersController {
         });
       }
 
-      return res.status(500).json({
-        success: false,
-        message: "Server xatosi",
-        error: error.message,
-      });
+      next(error);
     }
   }
 
-  async getAll(req, res) {
+  async getAll(req, res, next) {
     try {
       const users = await usersService.getAll();
       return res.json({
@@ -56,16 +50,11 @@ class UsersController {
         data: users,
       });
     } catch (error) {
-      console.error("Get all users error:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Server xatosi",
-        error: error.message,
-      });
+      next(error)
     }
   }
 
-  async getOne(req, res) {
+  async getOne(req, res, next) {
     try {
       const user = await usersService.getOne(req.params.id);
       if (!user) {
@@ -76,16 +65,11 @@ class UsersController {
       }
       return res.json({ success: true, data: user });
     } catch (error) {
-      console.error("Get one user error:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Server xatosi",
-        error: error.message,
-      });
+      next(error)
     }
   }
 
-  async deleteUser(req, res) {
+  async deleteUser(req, res, next) {
     try {
       const user = await usersService.getOne(req.params.id);
       if (!user) {
@@ -102,12 +86,7 @@ class UsersController {
         data: deleted,
       });
     } catch (error) {
-      console.error("Delete user error:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Server xatosi",
-        error: error.message,
-      });
+      next(error)
     }
   }
 }

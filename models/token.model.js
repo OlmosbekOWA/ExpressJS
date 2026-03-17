@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 const TokenSchema = new Schema({
     user:{type:Schema.ObjectId, ref:"User"},
-    refreshToken:{type:String, require: true}
+    refreshToken:{type:String, required: true}
 })
 
 const tokenModel = model("Token", TokenSchema)

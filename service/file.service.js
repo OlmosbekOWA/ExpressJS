@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import fs from "fs";
 import path from "path";
+import BaseError from "../errors/base.error.js";
 
 class FileService {
     /**
@@ -8,14 +9,24 @@ class FileService {
      * @param {Object|undefined} file - req.files.image yoki shunga o'xshash multer file obyekti
      * @returns {string|null} saqlangan fayl nomi yoki null
      */
-    save(file) {
+    async save(file) {
         // Agar file umuman kelmasa yoki undefined bo'lsa → darrov null qaytaramiz
         if (!file) {
             return null;
         }
 
+        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+        if (!ALLOWED_TYPES.includes(file.mimetype)) {
+            throw BaseError.BadRequest("Only JPEG, PNG, WebP allowed");
+        }
+        if (file.size > MAX_SIZE) {
+            throw BaseError.BadRequest("File too large (max 5MB)");
+        }
+
         try {
-            const fileName = `${uuidv4()}.jpg`;           
+            const fileName = `${uuidv4()}.${file.name.split('.').pop()}`;           
             const currentDir = import.meta.dirname;
             const staticDir = path.join(currentDir, "..", "static");
             const filePath = path.join(staticDir, fileName);
@@ -25,18 +36,20 @@ class FileService {
                 fs.mkdirSync(staticDir, { recursive: true });
             }
 
-            file.mv(filePath, (err) => {
-                if (err) {
-                    console.log("Fayl saqlashda xato:", err);
-                    throw err;
-                }
+            await new Promise((resolve, reject) => {
+                file.mv(filePath, (err) => {
+                    if (err) {
+                        reject(BaseError.BadRequest("Fayl saqlashda xato"));
+                    } else {
+                        resolve();
+                    }
+                });
             });
 
             return fileName;
 
         } catch (error) {
-            console.error("Rasm saqlashda xato:", error.message);
-            throw new Error("Rasm saqlanmadi");
+            throw BaseError.BadRequest("Rasm saqlanmadi");
         }
     }
 }
