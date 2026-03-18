@@ -1,7 +1,35 @@
 import postService from "../service/post.service.js";
 import fs from "fs/promises";
 import path from "path";
+
+/**
+ * @swagger
+ * tags:
+ *   name: Posts
+ *   description: Post management endpoints
+ */
+
 class PostController {
+  /**
+   * @swagger
+   * /api/post/get:
+   *   get:
+   *     summary: Get all posts
+   *     tags: [Posts]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: List of posts
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/Post'
+   *       500:
+   *         description: Internal server error
+   */
   //Get
   async getAll(req, res, next) {
     try {
@@ -12,6 +40,48 @@ class PostController {
       next(error)
     }
   }
+  /**
+   * @swagger
+   * /api/post/create:
+   *   post:
+   *     summary: Create a new post
+   *     tags: [Posts]
+   *     security:
+   *       - bearerAuth: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         multipart/form-data:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - title
+   *               - body
+   *             properties:
+   *               title:
+   *                 type: string
+   *                 example: 'Post title'
+   *               body:
+   *                 type: string
+   *                 example: 'Post content'
+   *               picture:
+   *                 type: string
+   *                 format: binary
+   *                 description: Image file (JPEG, PNG, WebP, max 5MB)
+   *     responses:
+   *       201:
+   *         description: Post created successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Post'
+   *       400:
+   *         description: Validation error
+   *       401:
+   *         description: Unauthorized
+   *       500:
+   *         description: Internal server error
+   */
   //Post
   async posts(req, res, next) {
     try {
@@ -32,6 +102,31 @@ class PostController {
       next(error)
     }
   }
+  /**
+   * @swagger
+   * /api/post/delete/{id}:
+   *   delete:
+   *     summary: Delete a post by ID
+   *     tags: [Posts]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Post ID
+   *     responses:
+   *       200:
+   *         description: Post deleted successfully
+   *       401:
+   *         description: Unauthorized
+   *       404:
+   *         description: Post not found
+   *       500:
+   *         description: Internal server error
+   */
   async delete(req, res, next) {
     try {
       const { id } = req.params;
@@ -69,6 +164,48 @@ class PostController {
       next(error)
     }
   }
+  /**
+   * @swagger
+   * /api/post/edit/{id}:
+   *   put:
+   *     summary: Update a post by ID
+   *     tags: [Posts]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Post ID
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               title:
+   *                 type: string
+   *                 example: 'Updated title'
+   *               body:
+   *                 type: string
+   *                 example: 'Updated content'
+   *     responses:
+   *       200:
+   *         description: Post updated successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Post'
+   *       401:
+   *         description: Unauthorized
+   *       404:
+   *         description: Post not found
+   *       500:
+   *         description: Internal server error
+   */
   async edit(req, res, next) {
     try {
       const { id } = req.params;
@@ -82,6 +219,33 @@ class PostController {
     }
   }
 
+  /**
+   * @swagger
+   * /api/post/get-id/{id}:
+   *   get:
+   *     summary: Get a post by ID
+   *     tags: [Posts]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Post ID
+   *     responses:
+   *       200:
+   *         description: Post data
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Post'
+   *       404:
+   *         description: Post not found
+   *       500:
+   *         description: Internal server error
+   */
   async getOne(req, res, next) {
     try {
       const { id } = req.params;

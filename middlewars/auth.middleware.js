@@ -4,6 +4,7 @@ import BaseError from "../errors/base.error.js";
 export default (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log("authHeader", authHeader);
     if (!authHeader) {
       return next(BaseError.UnauthorizedError());
     }

@@ -12,6 +12,6 @@ const userSchema = new Schema(
     
 );
 
-const userModel = model("User", userSchema);
+const authModel = model("Auth", userSchema);
 
-export default userModel;
+export default authModel;

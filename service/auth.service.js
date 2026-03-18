@@ -1,5 +1,5 @@
 import AuthDto from "../dtos/auth.dto.js";
-import userModel from "../models/user.model.js";
+import authModel from "../models/auth.model.js";
 import bcrypt from "bcrypt";
 import tokenService from "./token.service.js";
 import mailService from "./mail.service.js";
@@ -8,7 +8,7 @@ import error from "mongoose/lib/error/index.js";
 
 class AuthService {
   async register(email, password) {
-    const existUser = await userModel.findOne({ email });
+    const existUser = await authModel.findOne({ email });
     
 
     if (existUser) {
@@ -20,7 +20,7 @@ class AuthService {
     const saltRounds = 10;
 
     const hashPassword = await bcrypt.hash(password, saltRounds);
-    const user = await userModel.create({ email, password: hashPassword });
+    const user = await authModel.create({ email, password: hashPassword });
     const authDtos = new AuthDto(user);
 
     await mailService.sendMail(
@@ -36,7 +36,7 @@ class AuthService {
   async activate(userId) {
     console.log(userId);
 
-    const userData = await userModel.findById(userId);
+    const userData = await authModel.findById(userId);
     console.log(userData);
 
     if (!userData) {
@@ -48,7 +48,7 @@ class AuthService {
   }
   async login(email, password) {
 
-    const user = await userModel.findOne({ email })
+    const user = await authModel.findOne({ email })
 
     if (!user) {
       throw BaseError.BadRequest("User with this email not found");
@@ -90,7 +90,7 @@ class AuthService {
       throw BaseError.UnauthorizedError("Unauthorized");
     }
 
-    const user = await userModel.findById(userPayload.id);
+    const user = await authModel.findById(userPayload.id);
 
     const authDtos = new AuthDto(user);
 
@@ -100,5 +100,9 @@ class AuthService {
 
     return { user: authDtos, ...tokens };
   }
+  async getUsers() {
+    return await authModel.find();
+  }
+
 }
 export default new AuthService();

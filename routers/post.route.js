@@ -1,18 +1,19 @@
 import express from "express";
 import postCantroller from "../controllers/post.controller.js";
 import logger from "../middlewars/logger.js";
+import authMiddleware from "../middlewars/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/get", postCantroller.getAll);          
+router.get("/get", authMiddleware, postCantroller.getAll);          
 
-router.post("/create", logger, postCantroller.posts)
+router.post("/create", authMiddleware, logger, postCantroller.posts)
 
-router.delete("/delete/:id", postCantroller.delete);
+router.delete("/delete/:id", authMiddleware, postCantroller.delete);
 
-router.put("/edit/:id", postCantroller.edit)
+router.put("/edit/:id", authMiddleware, postCantroller.edit)
 
-router.get("/get-id/:id", postCantroller.getOne)
+router.get("/get-id/:id", authMiddleware, postCantroller.getOne)
 
 
 
