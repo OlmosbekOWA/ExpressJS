@@ -95,7 +95,7 @@ class PostController {
 
       const picture = req.files?.picture || null;
 
-      const createdPost = await postService.create(req.body, picture);
+      const createdPost = await postService.create(req.body, picture, req.user.id);
 
       return res.status(201).json(createdPost);
     } catch (error) {

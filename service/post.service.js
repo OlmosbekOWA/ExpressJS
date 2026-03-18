@@ -4,7 +4,7 @@ import fileService from "./file.service.js";
 import BaseError from "../errors/base.error.js";
 
 class PostService {
-  async create(post, picture) {
+  async create(post, picture, author) {
     let fileName = null;
 
     if (picture) {
@@ -13,14 +13,14 @@ class PostService {
 
     const newPost = await postModel.create({
       ...post,
-      picture: fileName,
+      picture: fileName, author
     });
     const postDtos  = new postDto(newPost)
     return postDtos;
 
   }
   async getAll() {
-    const allPosts = await postModel.find();
+    const allPosts = await postModel.find().populate("author", "email").sort({ createdAt: -1 });
     return allPosts;
   }
 

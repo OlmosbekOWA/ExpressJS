@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const postSchema = new Schema({
+  author: { type: Schema.Types.ObjectId, ref: "Auth", required: true },
   title: { type: String, required: true },   
   body:  { type: String, required: true },
   picture:{type: String, default: null}
